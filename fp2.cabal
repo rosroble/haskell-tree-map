@@ -35,7 +35,9 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       HUnit
+    , QuickCheck
     , base >=4.7 && <5
+    , containers
   default-language: Haskell2010
 
 executable fp2-exe
@@ -49,7 +51,9 @@ executable fp2-exe
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       HUnit
+    , QuickCheck
     , base >=4.7 && <5
+    , containers
     , fp2
   default-language: Haskell2010
 
@@ -67,5 +71,6 @@ test-suite fp2-test
       HUnit
     , QuickCheck
     , base >=4.7 && <5
+    , containers
     , fp2
   default-language: Haskell2010

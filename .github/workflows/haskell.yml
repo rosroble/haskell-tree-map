@@ -1,0 +1,37 @@
+name: Haskell CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: haskell-actions/setup@v2
+      with:
+        ghc-version: 'latest' 
+        enable-stack: true
+        stack-version: 'latest'
+
+    - name: 'Run tests'
+      run: stack test
+
+    - name: 'Run HLint'
+      uses: haskell-actions/hlint-scan@v1
+
+    - name: 'Run formatter'
+      uses: haskell-actions/run-ormolu@v14
+      with:
+        pattern: |
+          src/*.hs
+        
