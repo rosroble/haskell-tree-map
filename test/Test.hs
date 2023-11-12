@@ -41,7 +41,7 @@ testBaseOperations =
     ( do
         let treeMap = mapFromList [(4, "four"), (3, "thr33"), (11, "eleven"), (9, "nine"), (100, "hundred"), (3, "three")]
         assertEqual "Test assert size" 5 (TreeMap.size treeMap)
-        assertEqual "Test assert get 4" (Just "four") (TreeMap.get 4 treeMap)
+        assertEqual "Test assert get 4" (Just "four") (TreeMap.get (4 :: Integer) treeMap)
         assertEqual "Test assert get 3" (Just "thr33") (TreeMap.get 3 treeMap)
         assertEqual "Test assert contains 11" True (TreeMap.containsKey 11 treeMap)
         assertEqual "Test assert does not contain 8" False (TreeMap.containsKey 8 treeMap)
@@ -61,7 +61,7 @@ testFilter :: Test
 testFilter =
   TestCase
     ( do
-        let treeMap = filterMap (> 9) $ mapFromList [(4, "four"), (3, "thr33"), (11, "eleven"), (9, "nine"), (100, "hundred"), (3, "three")]
+        let treeMap = filterMap (> (9 :: Integer)) $ mapFromList [(4, "four"), (3, "thr33"), (11, "eleven"), (9, "nine"), (100, "hundred"), (3, "three")]
         assertEqual "Test assert size" 2 (TreeMap.size treeMap)
     )
 
@@ -71,9 +71,9 @@ testFold =
     ( do
         let tree = mapFromList [(4, "four"), (11, "eleven"), (9, "nine"), (100, "hundred"), (3, "three")]
         let sumKeysLeft = foldlMap (\cnt (k, _) -> cnt + k) 0 tree
-        assertEqual "Test assert sum keys left" 127 sumKeysLeft
+        assertEqual "Test assert sum keys left" (127 :: Integer) sumKeysLeft
         let sumKeysRight = foldrMap ((+) . fst) 0 tree
-        assertEqual "Test assert sum keys" 127 sumKeysRight
+        assertEqual "Test assert sum keys" (127 :: Integer) sumKeysRight
     )
 
 testMap :: Test
@@ -91,8 +91,8 @@ testMerge :: Test
 testMerge =
   TestCase
     ( do
-        let firstTree = mapFromList [(4, "four"), (11, "eleven"), (9, "nine"), (100, "hundred"), (3, "three")]
-        let secondTree = mapFromList [(11, "eleven"), (10, "ten"), (100, "hundred"), (88, "88")]
+        let firstTree = mapFromList [(4 :: Integer, "four"), (11, "eleven"), (9, "nine"), (100, "hundred"), (3, "three")]
+        let secondTree = mapFromList [(11 :: Integer, "eleven"), (10, "ten"), (100, "hundred"), (88, "88")]
         let merged = mergeMaps firstTree secondTree
         assertEqual "Test assert size is correct" 7 (TreeMap.size merged)
     )
