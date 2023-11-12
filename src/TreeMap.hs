@@ -6,7 +6,7 @@ data Tree k v = Nil | Node {keyvalue :: (k, v), leftchild :: Tree k v, rightchil
 
 put :: (Ord k) => k -> v -> Tree k v -> Tree k v
 put k v Nil = Node (k, v) Nil Nil
-put k v (Node kv@(k', v') left right)
+put k v (Node kv@(k', _) left right)
   | k == k' = Node (k, v) left right
   | k < k' = Node kv (put k v left) right
   | k > k' = Node kv left (put k v right)
@@ -15,12 +15,12 @@ putKV :: (Ord k) => (k, v) -> Tree k v -> Tree k v
 putKV (k, v) = put k v
 
 putIf :: (Ord k) => (k -> Bool) -> k -> v -> Tree k v -> Tree k v
-putIf pred k v tree = if pred k then put k v tree else tree
+putIf predi k v tree = if predi k then put k v tree else tree
 
 --- GET ---
 
 get :: (Ord k) => k -> Tree k v -> Maybe v
-get k Nil = Nothing
+get _ Nil = Nothing
 get k (Node (k', v') left right)
   | k == k' = Just v'
   | k < k' = get k left
@@ -51,15 +51,17 @@ removeRoot Nil = Nil
 removeRoot (Node _ Nil Nil) = Nil
 removeRoot (Node _ left Nil) = left
 removeRoot (Node _ Nil right) = right
-removeRoot (Node kv left right) = Node kv' left right'
+removeRoot (Node _ left right) = Node kv' left right'
   where
     kv' = keyvalue $ leftmost right
     right' = removeLeftmost right
 
+leftmost :: Tree k v -> Tree k v
 leftmost Nil = Nil
 leftmost n@(Node _ Nil _) = n
 leftmost (Node _ left _) = leftmost left
 
+removeLeftmost :: Tree k v -> Tree k v
 removeLeftmost Nil = Nil
 removeLeftmost (Node _ Nil right) = right
 removeLeftmost (Node kv left right) = Node kv (removeLeftmost left) right
