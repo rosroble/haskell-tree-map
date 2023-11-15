@@ -24,7 +24,7 @@ get _ Nil = Nothing
 get k (Node (k', v') left right)
   | k == k' = Just v'
   | k < k' = get k left
-  | otherwise =  get k right
+  | otherwise = get k right
 
 --- SIZE ---
 
