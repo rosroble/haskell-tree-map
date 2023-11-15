@@ -9,7 +9,7 @@ put k v Nil = Node (k, v) Nil Nil
 put k v (Node kv@(k', _) left right)
   | k == k' = Node (k, v) left right
   | k < k' = Node kv (put k v left) right
-  | k > k' = Node kv left (put k v right)
+  | otherwise = Node kv left (put k v right)
 
 putKV :: (Ord k) => (k, v) -> Tree k v -> Tree k v
 putKV (k, v) = put k v
@@ -24,7 +24,7 @@ get _ Nil = Nothing
 get k (Node (k', v') left right)
   | k == k' = Just v'
   | k < k' = get k left
-  | k > k' = get k right
+  | otherwise =  get k right
 
 --- SIZE ---
 
@@ -41,7 +41,7 @@ removeKey _ Nil = Nil
 removeKey k n@(Node kv@(k', _) left right)
   | k == k' = removeRoot n
   | k < k' = Node kv (removeKey k left) right
-  | k > k' = Node kv left (removeKey k right)
+  | otherwise = Node kv left (removeKey k right)
 
 -- In case node has no successors -> just remove
 -- In case node has one successor -> swap with the successor and remove
