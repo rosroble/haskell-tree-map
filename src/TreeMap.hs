@@ -1,6 +1,14 @@
 module TreeMap (Tree (..), put, get, size, removeKey, containsKey, mapFromList, filterMap, foldlMap, foldrMap, mapMap, mergeMaps) where
 
-data Tree k v = Nil | Node {keyvalue :: (k, v), leftchild :: Tree k v, rightchild :: Tree k v} deriving (Show, Eq)
+data Tree k v = Nil | Node {keyvalue :: (k, v), leftchild :: Tree k v, rightchild :: Tree k v} deriving (Show)
+
+instance (Ord k, Eq v) => Eq (Tree k v) where
+  Nil == Nil = True
+  Nil == _ = False
+  _ == Nil = False
+  n1 == n2 =
+    let help kv xs = kv : xs
+     in foldrMap help [] n1 == foldrMap help [] n2
 
 --- PUT ---
 

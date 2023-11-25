@@ -19,8 +19,8 @@ import TreeMap
 
 main :: IO ()
 main = do
-  quickCheck pbt_merge
-  quickCheck pbt_neutral
+  quickCheck pbt_merge_assoc
+  quickCheck pbt_merge_neutral
   quickCheck pbt_filter
   quickCheck pbt_fold
   runTestTTAndExit tests
@@ -98,14 +98,18 @@ testMerge =
     )
 
 -- verify that resulting map has all the keys from merged maps
-pbt_merge :: [(Int, Int)] -> [(Int, Int)] -> Bool
-pbt_merge pairs1 pairs2 = all containsKey' pairs1 && all containsKey' pairs2
-  where
-    containsKey' pair = containsKey (fst pair) (mergeMaps (mapFromList pairs1) (mapFromList pairs2))
+pbt_merge_assoc :: [(Int, Int)] -> [(Int, Int)] -> [(Int, Int)] -> Bool
+pbt_merge_assoc pairs1 pairs2 pairs3 =
+  let m1 = mapFromList pairs1
+      m2 = mapFromList pairs2
+      m3 = mapFromList pairs3
+   in (m1 `mergeMaps` m2) `mergeMaps` m3 == m1 `mergeMaps` (m2 `mergeMaps` m3)
 
 -- verify neutral element has no effect
-pbt_neutral :: [(Int, Int)] -> Bool
-pbt_neutral pairs = mapFromList pairs == mergeMaps (mapFromList pairs) TreeMap.Nil
+pbt_merge_neutral :: [(Int, Int)] -> Bool
+pbt_merge_neutral pairs =
+  let map' = mapFromList pairs
+   in map' == mergeMaps map' TreeMap.Nil && map' == mergeMaps TreeMap.Nil map'
 
 -- verify that filtered map still contains all the keys satisfying predicate
 -- and contains none keys not satisfying the predicate
