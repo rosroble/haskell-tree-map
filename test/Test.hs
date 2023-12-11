@@ -99,12 +99,13 @@ testMerge =
 
 ----PBT----
 
-newtype IntStrTree = IntStrTree (Tree Integer String) deriving Show
+newtype IntStrTree = IntStrTree (Tree Integer String) deriving (Show)
 
 instance Arbitrary IntStrTree where
-  arbitrary = IntStrTree . mapFromList <$> genList where
-    genList :: Gen [(Integer, String)]
-    genList = listOf arbitrary
+  arbitrary = IntStrTree . mapFromList <$> genList
+    where
+      genList :: Gen [(Integer, String)]
+      genList = listOf arbitrary
 
 -- verify that resulting map has all the keys from merged maps
 pbt_merge_assoc_arb :: IntStrTree -> IntStrTree -> IntStrTree -> Bool
