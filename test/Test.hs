@@ -19,8 +19,8 @@ import TreeMap
 
 main :: IO ()
 main = do
-  quickCheck pbt_merge_assoc
-  quickCheck pbt_merge_neutral
+  quickCheck pbt_merge_assoc_arb
+  quickCheck pbt_merge_neutral_arb
   quickCheck pbt_filter
   quickCheck pbt_fold
   runTestTTAndExit tests
@@ -97,19 +97,22 @@ testMerge =
         assertEqual "Test assert size is correct" 7 (TreeMap.size merged)
     )
 
+----PBT----
+
+newtype IntStrTree = IntStrTree (Tree Integer String) deriving Show
+
+instance Arbitrary IntStrTree where
+  arbitrary = IntStrTree . mapFromList <$> genList where
+    genList :: Gen [(Integer, String)]
+    genList = listOf arbitrary
+
 -- verify that resulting map has all the keys from merged maps
-pbt_merge_assoc :: [(Int, Int)] -> [(Int, Int)] -> [(Int, Int)] -> Bool
-pbt_merge_assoc pairs1 pairs2 pairs3 =
-  let m1 = mapFromList pairs1
-      m2 = mapFromList pairs2
-      m3 = mapFromList pairs3
-   in (m1 `mergeMaps` m2) `mergeMaps` m3 == m1 `mergeMaps` (m2 `mergeMaps` m3)
+pbt_merge_assoc_arb :: IntStrTree -> IntStrTree -> IntStrTree -> Bool
+pbt_merge_assoc_arb (IntStrTree m1) (IntStrTree m2) (IntStrTree m3) = (m1 `mergeMaps` m2) `mergeMaps` m3 == m1 `mergeMaps` (m2 `mergeMaps` m3)
 
 -- verify neutral element has no effect
-pbt_merge_neutral :: [(Int, Int)] -> Bool
-pbt_merge_neutral pairs =
-  let map' = mapFromList pairs
-   in map' == mergeMaps map' TreeMap.Nil && map' == mergeMaps TreeMap.Nil map'
+pbt_merge_neutral_arb :: IntStrTree -> Bool
+pbt_merge_neutral_arb (IntStrTree t) = t == mergeMaps t TreeMap.Nil && t == mergeMaps TreeMap.Nil t
 
 -- verify that filtered map still contains all the keys satisfying predicate
 -- and contains none keys not satisfying the predicate
